@@ -6,7 +6,42 @@ Stack principal: `Tauri 2` + `Rust` + `React 19` + `TypeScript` + `Zustand` + `T
 
 ## Versão atual
 
-`0.4.8`
+`0.5.2`
+
+## Novidades da 0.5.2
+
+- Sync e backup passaram a projetar credenciais por uma lista positiva de metadados permitidos antes da exportação
+- Campos legados como `privateKeyContent`, `passphrase` e `publicKeyContent` não vazam mais para a área em texto claro do payload portátil
+- A validação de entrada continua bloqueando segredos em texto claro; backups ou payloads de sync produzidos com o defeito devem ser gerados novamente após a atualização
+
+## Novidades da 0.5.1
+
+- O viewer RDP interno passou a entregar eventos de teclado e mouse diretamente ao worker de rede, reduzindo filas de input no Windows
+- Movimento bruto do dispositivo deixou de duplicar pacotes de mouse no Windows; o viewer usa as coordenadas absolutas de `CursorMoved`
+- Teclados ABNT/ISO agora mapeiam a tecla adicional de barra invertida (`IntlBackslash`) para o scan code RDP correto
+- Enquanto o viewer ainda não desenha o formato do ponteiro remoto, o cursor nativo permanece visível no Windows
+
+## Novidades da 0.5.0
+
+- O viewer RDP interno passou a usar `winit` + `wgpu`, com upload incremental das regiões alteradas do framebuffer para a GPU
+- O modo fullscreen com múltiplos monitores mantém uma surface e textura por monitor; o modo janela continua exibindo o desktop virtual completo
+- O cliente RDP ganhou worker de rede dedicado e métricas de leitura, processamento, decodificação, conversão e apresentação
+- O viewer interno continua experimental; o launcher nativo permanece o caminho recomendado para RDP
+
+## Novidades da 0.4.10
+
+- Sync, restore, importação CSV e importação de `~/.ssh/config` agora validam o estado portátil e aplicam hosts, credenciais, chaves SSH e settings em uma única transação SQLite
+- Dados externos passam por validação estrutural, com limites de tamanho/profundidade, rejeição de segredos em texto claro e proteção contra chaves de prototype pollution
+- SFTP e jump hosts passaram a exigir confirmação explícita de fingerprints desconhecidas antes de persistir confiança; divergências continuam bloqueadas
+- O lançamento no terminal do macOS passou a aplicar quoting POSIX em todos os argumentos e escape próprio para AppleScript
+
+## Novidades da 0.4.9
+
+- Abas abertas de hosts persistidos são restauradas ao reabrir o app, sempre desconectadas e exigindo reconexão explícita
+- Reconexão de sessões passou a manter a aba ativa e evita tentativas duplicadas de conexão; o terminal também ignora redimensionamentos inválidos antes da conexão
+- A pipeline dessa release passou a validar TypeScript, testes frontend, formatação, Clippy e testes Rust antes dos builds de distribuição
+- Releases Linux incluem o arquivo `-standalone-linux.tar.gz`, que usa WebKit/GTK do sistema e serve como alternativa ao AppImage em ambientes com incompatibilidade de EGL/WebKit
+- A publicação de releases passou a anexar somente os instaladores e executáveis standalone esperados, sem expor o binário interno do viewer RDP
 
 ## Novidades da 0.4.8
 
@@ -128,7 +163,7 @@ Stack principal: `Tauri 2` + `Rust` + `React 19` + `TypeScript` + `Zustand` + `T
 - Novo fluxo de criação com `split button` em `+ Nova Conexão`, mantendo o cadastro individual rápido e adicionando atalhos para importações
 - Tela dedicada para importação em massa por CSV, com modos `Adicionar novos` e `Atualizar existentes`
 - Centralização prática do versionamento: `package.json` passou a ser a fonte principal e o projeto agora inclui um script de sincronização para `Cargo.toml`, `Cargo.lock` e `package-lock.json`
-- Cliente RDP interno em `clients/internal-rdp-client`, com viewer local, screenshot, input básico e tuning de fluidez sem impacto no app principal
+- Cliente RDP interno em `clients/internal-rdp-client`, com viewer local, screenshot, input de teclado e mouse, renderização GPU incremental e métricas de desempenho
 - Decisão atual de produto para RDP: o launcher nativo continua sendo o caminho oficial recomendado; o viewer interno também pode ser empacotado junto com o app compilado
 
 ## Novidades da 0.3.0
@@ -147,7 +182,7 @@ Stack principal: `Tauri 2` + `Rust` + `React 19` + `TypeScript` + `Zustand` + `T
 - Chaves SSH próprias, com geração de fingerprint e vínculo por credencial
 - Terminal integrado com `xterm.js`, múltiplas abas com reorganização por drag and drop, split panes redimensionáveis, reconexão manual, links clicáveis, comportamento configurável para botão direito (incluindo cópia automática ao selecionar no modo PuTTY e bracketed paste para editores remotos) e fechamento automático em encerramento limpo
 - Página dedicada para sessões `RDP` e `VNC`, com monitoramento completo para clientes gerenciados pelo app e comportamento explícito quando a sessão é repassada para um launcher externo
-- SFTP integrado para hosts `SSH`, com navegação remota, upload, download, rename, delete e mkdir; pode abrir em aba própria ou lado a lado com o terminal SSH conforme preferência do usuário
+- SFTP integrado para hosts `SSH`, com navegação remota, upload, download, rename, delete e mkdir; pode abrir em aba própria ou lado a lado com o terminal SSH conforme preferência do usuário. A primeira fingerprint do destino e de jump hosts exige confirmação explícita
 - `Quick Connect` na command palette para conexões temporárias `SSH`, `Telnet`, `RDP` e `VNC` sem salvar host
 - Opção para abrir sessões na `mesma janela` ou no `terminal do sistema` (SSH/Telnet) e em `janelas dedicadas` (RDP/VNC)
 - Dashboard com filtros compactos por grupo/subgrupo, tag, ordenação, modo de cards completo/compacto e edição em massa de `credencial`, `grupo` e `tags`
@@ -155,20 +190,20 @@ Stack principal: `Tauri 2` + `Rust` + `React 19` + `TypeScript` + `Zustand` + `T
 - Acesso às importações direto pelo `+ Nova Conexão`, sem atrapalhar o fluxo principal de cadastro individual
 - Operações com snippets, túneis e workspaces com compatibilidade por protocolo
 - `Health check` de hosts e inventário de fingerprints salvas para hosts `SSH`, com edição manual do `known_hosts` interno do app
-- Backup/restore com arquivo `.sshvault`, preservando o protocolo de cada host
-- Sincronização remota com `GitHub Gist`, `S3/MinIO`, `WebDAV/Nextcloud` ou endpoint customizado
+- Backup/restore com arquivo `.sshvault`, preservando o protocolo de cada host e validando o conteúdo antes da aplicação
+- Sincronização remota com `GitHub Gist`, `S3/MinIO`, `WebDAV/Nextcloud` ou endpoint customizado; pull e restore aplicam o estado portátil de forma transacional
 - Auto-sync periódico de estado portátil, bloqueado até existir senha mestra configurada e uma primeira sincronização manual
 - MFA/TOTP por host `SSH`
 - Interface traduzida para `pt-BR` e `en-US`, com a localização aplicada também em mensagens de backup, sync, terminal, SFTP e notificações principais
 
 Hoje o app já opera como `Multi-Protocol Connection Manager`, com `SSH` e `Telnet` compartilhando a infraestrutura de terminal, `RDP` usando uma rota própria para abrir o launcher nativo da plataforma ou o viewer interno empacotado com o app, e `VNC` usando um fluxo dedicado para acionar clientes externos com transparência sobre o que o app consegue ou não monitorar.
 
-O cliente RDP interno está em [clients/internal-rdp-client/README.md](/home/fernando/Documentos/ssh_vault/clients/internal-rdp-client/README.md). Esse cliente já consegue conectar, autenticar, renderizar a sessão remota, enviar input e capturar screenshots, e pode ser acionado pelo app principal quando o modo de abertura interno está ativo.
+O cliente RDP interno está em [clients/internal-rdp-client/README.md](clients/internal-rdp-client/README.md). Esse cliente já consegue conectar, autenticar, renderizar a sessão remota, enviar input e capturar screenshots, e pode ser acionado pelo app principal quando o modo de abertura interno está ativo. No Windows, mantém temporariamente o cursor nativo visível enquanto o desenho da forma do ponteiro remoto não é implementado.
 
 ## Escopo por protocolo
 
 - `SSH`
-  Terminal completo com splits redimensionáveis e reconexão, SFTP em aba ou lado a lado, snippets remotos, batch execution, túneis, health check, inventário de fingerprints com edição manual do `known_hosts` interno do app, MFA/TOTP, import de `~/.ssh/config`, importação em massa via `.csv`, jump host e presets de compatibilidade.
+  Terminal completo com splits redimensionáveis e reconexão, SFTP em aba ou lado a lado, snippets remotos, batch execution, túneis, health check, inventário de fingerprints com edição manual do `known_hosts` interno do app, MFA/TOTP, import de `~/.ssh/config`, importação em massa via `.csv`, jump host e presets de compatibilidade. SFTP confirma explicitamente fingerprints ainda não confiadas, inclusive de jump hosts.
 - `Telnet`
   Terminal interativo com múltiplas abas, splits redimensionáveis, reconexão, quick connect, workspaces, preservação de sessão entre trocas de aba e suporte ao cadastro/import em massa via `.csv`.
 - `RDP`
@@ -215,6 +250,9 @@ O cliente RDP interno está em [clients/internal-rdp-client/README.md](/home/fer
 - Preferências portáveis incluem idioma, tema, modo de cards do dashboard, comportamento de abertura do SFTP, terminal, SSH, RDP, VNC, grupos, produtividade e tombstones de hosts removidos
 - O `push` publica o snapshot local atual no provider
 - O `pull` importa/mescla o conteúdo remoto no estado local
+- Antes de hidratar o estado, sync e backup validam a estrutura, timestamps, identificadores, envelopes criptografados e limites do payload; segredos em texto claro são rejeitados
+- Na exportação, credenciais são reconstruídas somente com os metadados permitidos; isso também elimina campos sensíveis remanescentes de registros criados por versões antigas
+- A aplicação do estado portátil usa uma única transação SQLite: hosts, credenciais, chaves SSH e settings só substituem o estado local após o commit
 - Remoções de hosts viajam como `deletedHosts`, preservando o merge de hosts novos locais sem ressuscitar hosts já apagados em outro dispositivo
 - Auto-sync faz `push` em background sem prompt de senha mestra, então segredos cifrados dependentes da senha não entram nesse fluxo
 
@@ -369,11 +407,11 @@ npm run tauri build
 
 ### Distribuição automatizada (GitHub Actions)
 
-O workflow [.github/workflows/build.yml](/home/fernando/Documentos/ssh_vault/.github/workflows/build.yml) compila o app nas três plataformas em paralelo (`ubuntu-22.04`, `windows-latest`, `macos-latest`).
+O workflow [.github/workflows/build.yml](.github/workflows/build.yml) compila o app nas três plataformas em paralelo (`ubuntu-22.04`, `windows-latest`, `macos-latest`).
 
 Gatilhos:
 
-- **push de tag `v*`** (ex: `v0.4.8`): compila todas as plataformas e publica uma GitHub Release com os artefatos.
+- **push de tag `v*`** (ex: `v0.5.2`): compila todas as plataformas e publica uma GitHub Release com os artefatos.
 - **execução manual** (`workflow_dispatch`, na aba *Actions*): compila e disponibiliza os artefatos, sem criar Release.
 
 A cada release publicada, o workflow mantém apenas as **2 releases mais recentes** no GitHub — as anteriores são apagadas junto com suas tags.
@@ -382,11 +420,13 @@ Artefatos gerados por plataforma:
 
 | Plataforma | Formatos |
 | --- | --- |
-| Linux | `.deb`, `.rpm`, `.AppImage` |
+| Linux | `.deb`, `.rpm`, `.AppImage`, `-standalone-linux.tar.gz` |
 | Windows | `.msi` (instalador), `-setup.exe` (instalador NSIS), `-standalone.exe` (executável standalone) |
 | macOS | `.dmg`, `.app` |
 
 > O `-standalone.exe` é o binário direto do app (sem instalador). Ele depende do **WebView2 Runtime** já presente no sistema (padrão no Windows 10/11 atualizados). Os instaladores `.msi` e `-setup.exe` embutem o WebView2 offline e funcionam mesmo sem o runtime instalado.
+
+> O `-standalone-linux.tar.gz` contém a árvore instalada do pacote Linux e usa o WebKit/GTK disponível no sistema. É a alternativa indicada quando o AppImage encontrar incompatibilidade com o runtime gráfico da distribuição.
 
 ### Aviso de nova versão no app
 
@@ -394,28 +434,27 @@ Ao abrir a janela principal, o app consulta a última release publicada no GitHu
 
 ## Versionamento
 
-O projeto agora usa o [package.json](/home/fernando/Documentos/ssh_vault/package.json) como fonte principal da versão da aplicação.
+O projeto agora usa o [package.json](package.json) como fonte principal da versão da aplicação.
 
 Arquivos sincronizados a partir dele:
 
-- [package-lock.json](/home/fernando/Documentos/ssh_vault/package-lock.json)
-- [src-tauri/Cargo.toml](/home/fernando/Documentos/ssh_vault/src-tauri/Cargo.toml)
-- [src-tauri/Cargo.lock](/home/fernando/Documentos/ssh_vault/src-tauri/Cargo.lock)
-- [src-tauri/tauri.conf.json](/home/fernando/Documentos/ssh_vault/src-tauri/tauri.conf.json) já aponta para o `package.json`
-- [src/lib/appInfo.ts](/home/fernando/Documentos/ssh_vault/src/lib/appInfo.ts) lê a versão direto do `package.json`
+- [package-lock.json](package-lock.json)
+- [src-tauri/Cargo.toml](src-tauri/Cargo.toml)
+- [src-tauri/Cargo.lock](src-tauri/Cargo.lock)
+- [src-tauri/tauri.conf.json](src-tauri/tauri.conf.json) já aponta para o `package.json`
+- [src/lib/appInfo.ts](src/lib/appInfo.ts) lê a versão direto do `package.json`
 
 Fluxo recomendado para atualizar a versão:
 
-1. Edite o campo `version` em [package.json](/home/fernando/Documentos/ssh_vault/package.json).
+1. Edite o campo `version` em [package.json](package.json).
 2. Rode `npm run version:sync`.
 3. Se quiser validar o pacote final, rode `npm run build`.
 
 ## Arquivos de referência
 
-- [README.md](/home/fernando/Documentos/ssh_vault/README.md)
-- [TECHNICAL_REFERENCE.md](/home/fernando/Documentos/ssh_vault/TECHNICAL_REFERENCE.md)
-- [clients/internal-rdp-client/README.md](/home/fernando/Documentos/ssh_vault/clients/internal-rdp-client/README.md)
-- [melhorias.txt](/home/fernando/Documentos/ssh_vault/melhorias.txt)
+- [README.md](README.md)
+- [TECHNICAL_REFERENCE.md](TECHNICAL_REFERENCE.md)
+- [clients/internal-rdp-client/README.md](clients/internal-rdp-client/README.md)
 
 ## Situação atual
 

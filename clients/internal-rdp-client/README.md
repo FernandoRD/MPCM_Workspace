@@ -27,7 +27,7 @@ O protótipo já consegue:
 - autenticar com usuário e senha
 - processar a sessão ativa tempo suficiente para receber frames
 - abrir uma janela local simples para visualizar o desktop remoto
-- enviar input básico de teclado e mouse para a sessão remota
+- enviar input de teclado e mouse para a sessão remota, incluindo a tecla extra de teclados ABNT/ISO
 - salvar um screenshot `.png` do desktop remoto
 - ajustar resolução e profundidade de cor pelo CLI
 - respeitar `fullscreen`, `width` e `height` vindos das settings do app, com override explícito por CLI
@@ -176,7 +176,8 @@ Essa separação é a base planejada para uma integração futura com `Tauri`, s
 - scroll vertical e horizontal do mouse/trackpad
 
 Para encerrar o viewer, feche a janela local.
-O viewer oculta o cursor local e passa a renderizar o ponteiro remoto na própria sessão quando o servidor fornecer esse update.
+
+No Windows, o viewer mantém o cursor nativo visível. O desenho da forma do ponteiro remoto ainda não está implementado; essa escolha evita que o cursor desapareça ao entrar no desktop remoto. Em Linux e macOS, o comportamento do cursor segue o ciclo da janela do viewer.
 
 ## Estrutura
 
@@ -248,8 +249,8 @@ cargo run --manifest-path clients/internal-rdp-client/Cargo.toml --bin viewer_mv
 
 ## Próximos passos sugeridos
 
-1. Ampliar o mapeamento de teclas especiais e atalhos do viewer.
-2. Refinar lifecycle de janela, shutdown e reconexão.
-3. Consolidar uma API interna estável para sessão, input e render.
-4. Definir o contrato de integração futura com `src-tauri`.
-5. Só então começar a plugar isso na aplicação principal.
+1. Renderizar a forma do ponteiro remoto.
+2. Ampliar o mapeamento de teclas especiais e atalhos do viewer.
+3. Refinar lifecycle de janela, shutdown e reconexão.
+4. Consolidar uma API interna estável para sessão, input e render.
+5. Definir o contrato de integração futura com `src-tauri`.
