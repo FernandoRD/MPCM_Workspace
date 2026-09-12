@@ -2,6 +2,8 @@
 
 Data da análise: 27 de agosto de 2026
 
+> Nota de atualização (29 de agosto de 2026): esta é uma análise histórica da base anterior às releases `0.5.0` e `0.5.1`. As correções P0 e as melhorias P1 de atomicidade e validação descritas abaixo já foram implementadas; o viewer RDP interno também migrou para `winit` + `wgpu` e recebeu ajustes de input no Windows. Os riscos pendentes nesta análise permanecem relevantes somente quando não marcados como implementados.
+
 ## Resumo executivo
 
 O MPCM Workspace possui uma base local-first coerente, com frontend React/TypeScript, estado em Zustand e backend Tauri/Rust responsável por persistência, criptografia, processos e protocolos remotos. O banco usa SQLCipher, a chave é mantida no keychain do sistema e existem controles como rate limiting, zeroização de algumas credenciais e confirmação de fingerprint no SSH principal.
@@ -12,11 +14,11 @@ Os riscos mais importantes estão na fronteira entre dados importados e operaç�
 
 | Prioridade | Melhoria | Impacto | Esforço |
 |---|---|---|---|
-| P0 | Corrigir quoting e escaping do terminal no macOS | Evitar execução local de comandos por dados maliciosos | Médio |
-| P0 | Exigir confirmação explícita de fingerprints no SFTP e jump hosts | Evitar MITM silencioso na primeira conexão | Médio |
-| P1 | Tornar sync, restore e importação transacionais | Evitar vault parcialmente apagado ou divergência entre UI e banco | Médio |
+| P0 | Corrigir quoting e escaping do terminal no macOS | Implementado; evita execução local alterada por dados maliciosos | Médio |
+| P0 | Exigir confirmação explícita de fingerprints no SFTP e jump hosts | Implementado; evita MITM silencioso na primeira conexão | Médio |
+| P1 | Tornar sync, restore e importação transacionais | Implementado; evita vault parcialmente apagado ou divergência entre UI e banco | Médio |
 | P1 | Usar certificado estrito no RDP e retirar senha da linha de comando | Reduzir exposição de credenciais e MITM | Médio |
-| P1 | Validar integralmente payloads de backup e sincronização | Impedir entrada de estruturas inválidas ou maliciosas | Baixo/médio |
+| P1 | Validar integralmente payloads de backup e sincronização | Implementado; impede entrada de estruturas inválidas ou maliciosas | Baixo/médio |
 | P2 | Executar testes, lint e auditorias no CI | Reduzir regressões | Médio |
 | P2 | Dividir módulos grandes e aplicar code splitting | Melhorar manutenção e carregamento inicial | Médio |
 
