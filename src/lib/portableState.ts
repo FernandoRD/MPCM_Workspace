@@ -43,7 +43,15 @@ export function sanitizeHosts(hosts: HostEntry[]): HostEntry[] {
 }
 
 export function sanitizeCredentials(credentials: Credential[]): Credential[] {
-  return credentials.map(({ password: _password, ...rest }) => rest as Credential);
+  return credentials.map((credential) => ({
+    id: credential.id,
+    label: credential.label,
+    username: credential.username,
+    authMethod: credential.authMethod,
+    ...(credential.keyId !== undefined ? { keyId: credential.keyId } : {}),
+    createdAt: credential.createdAt,
+    updatedAt: credential.updatedAt,
+  }));
 }
 
 export function sanitizeSshKeys(sshKeys: SshKey[]): SshKey[] {
