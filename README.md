@@ -182,7 +182,7 @@ Stack principal: `Tauri 2` + `Rust` + `React 19` + `TypeScript` + `Zustand` + `T
 - Chaves SSH próprias, com geração de fingerprint e vínculo por credencial
 - Terminal integrado com `xterm.js`, múltiplas abas com reorganização por drag and drop, split panes redimensionáveis, reconexão manual, links clicáveis, comportamento configurável para botão direito (incluindo cópia automática ao selecionar no modo PuTTY e bracketed paste para editores remotos) e fechamento automático em encerramento limpo
 - Página dedicada para sessões `RDP` e `VNC`, com monitoramento completo para clientes gerenciados pelo app e comportamento explícito quando a sessão é repassada para um launcher externo
-- SFTP integrado para hosts `SSH`, com navegação remota, upload, download, rename, delete e mkdir; pode abrir em aba própria ou lado a lado com o terminal SSH conforme preferência do usuário. A primeira fingerprint do destino e de jump hosts exige confirmação explícita
+- SFTP integrado para hosts `SSH`, com navegação remota, upload de um ou vários arquivos na mesma seleção, envio recursivo de uma pasta inteira, download, rename, delete e mkdir; pode abrir em aba própria ou lado a lado com o terminal SSH conforme preferência do usuário. Pastas preservam a estrutura relativa no destino, enquanto links simbólicos locais são rejeitados. A primeira fingerprint do destino e de jump hosts exige confirmação explícita
 - `Quick Connect` na command palette para conexões temporárias `SSH`, `Telnet`, `RDP` e `VNC` sem salvar host
 - Opção para abrir sessões na `mesma janela` ou no `terminal do sistema` (SSH/Telnet) e em `janelas dedicadas` (RDP/VNC)
 - Dashboard com filtros compactos por grupo/subgrupo, tag, ordenação, modo de cards completo/compacto e edição em massa de `credencial`, `grupo` e `tags`
@@ -465,6 +465,7 @@ O projeto já cobre o núcleo operacional multi-protocolo atual e inclui:
 - suporte consolidado a `Telnet`
 - suporte a `RDP` via launcher nativo e viewer interno experimental
 - SFTP lado a lado com SSH ou em aba própria, conforme configuração
+- Upload SFTP de múltiplos arquivos e de pastas inteiras com preservação da hierarquia
 - cards do dashboard em modo completo ou compacto
 - splits de terminal/SFTP redimensionáveis
 - importação em massa via `.csv`

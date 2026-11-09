@@ -8,6 +8,7 @@
 - Backend: Tauri 2 e Rust
 - Persistência: SQLite/SQLCipher; segredos do estado portátil são cifrados com a senha mestra
 - O launcher RDP nativo é o caminho recomendado; o viewer interno em `clients/internal-rdp-client` permanece experimental
+- O SFTP permite enviar vários arquivos de uma vez ou uma pasta inteira recursivamente, preservando a hierarquia remota; links simbólicos locais são rejeitados
 
 ## Comandos principais
 

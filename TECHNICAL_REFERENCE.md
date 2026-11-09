@@ -325,6 +325,7 @@ Rotas atuais:
   Encapsula `xterm.js`, reanexação de saída, resize no backend, diálogo TOFU de fingerprint e reconexão controlada por `reconnectNonce`.
 - [SftpPage.tsx](src/pages/SftpPage.tsx)
   Pode operar como rota independente (`/sftp/:tabId`) ou como painel embutido ao lado de uma sessão `SSH`.
+  Os controles de upload usam o seletor nativo para escolher vários arquivos ou uma pasta. A seleção é enviada ao comando `sftp_upload_items`; arquivos são colocados diretamente no diretório remoto atual e pastas são percorridas recursivamente, preservando o nome da pasta e sua hierarquia. Links simbólicos locais não são aceitos.
 - [RdpPage.tsx](src/pages/RdpPage.tsx)
   Orquestra a conexão RDP, exibe diagnósticos de launcher e acompanha o ciclo de vida da sessão.
 - [VncPage.tsx](src/pages/VncPage.tsx)
@@ -476,6 +477,7 @@ Arquivo-base: [lib.rs](src-tauri/src/lib.rs)
 - `sftp_read_dir`
 - `sftp_download`
 - `sftp_upload`
+- `sftp_upload_items`
 - `sftp_mkdir`
 - `sftp_delete`
 - `sftp_rename`

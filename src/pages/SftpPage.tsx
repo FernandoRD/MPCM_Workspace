@@ -3,6 +3,7 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Folder,
+  FolderUp,
   File,
   FolderPlus,
   FileUp,
@@ -436,13 +437,17 @@ export function SftpPage({
     }
   };
 
-  const handleUpload = async () => {
-    const filePath = await open({ multiple: false, directory: false });
-    if (!filePath) return;
-    const fileName = getPathBaseName(filePath as string) || "upload";
-    const remotePath = currentPath.endsWith("/")
-      ? `${currentPath}${fileName}`
-      : `${currentPath}/${fileName}`;
+  const handleUpload = async (directory: boolean) => {
+    const selection = await open({
+      multiple: !directory,
+      directory,
+      recursive: directory,
+    });
+    if (!selection) return;
+    const localPaths = Array.isArray(selection) ? selection : [selection];
+    const fileName = localPaths.length === 1
+      ? getPathBaseName(localPaths[0]) || "upload"
+      : `${localPaths.length} ${t("sftp.files")}`;
     try {
       setTransferProgress({
         operation: "upload",
@@ -450,15 +455,15 @@ export function SftpPage({
         bytesDone: 0,
         bytesTotal: 0,
       });
-      await invoke("sftp_upload", { sessionId, localPath: filePath, remotePath });
+      await invoke("sftp_upload_items", { sessionId, localPaths, remoteBasePath: currentPath });
       await loadDir(currentPath);
     } catch (err) {
       const message = String(err);
       setError(message);
       logFrontendError("sftp.upload", "Falha ao enviar arquivo via SFTP", err, {
         sessionId,
-        localPath: filePath,
-        remotePath,
+        localPaths,
+        remoteBasePath: currentPath,
       });
     } finally {
       setTransferProgress(null);
@@ -714,11 +719,20 @@ export function SftpPage({
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleUpload}
-            title={t("sftp.upload")}
+            onClick={() => handleUpload(false)}
+            title={t("sftp.uploadFiles")}
             disabled={!!transferProgress}
           >
             <FileUp size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleUpload(true)}
+            title={t("sftp.uploadFolder")}
+            disabled={!!transferProgress}
+          >
+            <FolderUp size={14} />
           </Button>
           <Button
             variant="ghost"
