@@ -148,6 +148,7 @@ src/
     settings.ts
     sshKeys.ts
     tunnelRuntime.ts
+    updateStore.ts
     uiStore.ts
   themes/
   types/
@@ -169,8 +170,10 @@ src-tauri/
     ssh_config.rs
     storage.rs
     sync.rs
+    system_terminal.rs
     telnet.rs
     totp.rs
+    updates.rs
     vnc.rs
 
 clients/
@@ -180,14 +183,23 @@ clients/
       bin/
         screenshot_mvp.rs
         viewer_mvp.rs
+      config.rs
+      framebuffer.rs
+      lib.rs
       mvp_runtime.rs
+      protocol/
+        mod.rs
+        tpkt.rs
+        x224.rs
+      rdp_worker.rs
+      session.rs
+      settings_bridge.rs
+      transport.rs
       viewer_gpu.rs
+      viewer_metrics.rs
       viewer_winit.rs
       viewer_winit_input.rs
       viewer_winit_multimon.rs
-      protocol/
-        tpkt.rs
-        x224.rs
 ```
 
 ## 4. Modelo de dados
@@ -952,7 +964,7 @@ Separação interna atual do protótipo:
 - `bin/screenshot_mvp`
   composição do fluxo de captura
 
-Essa separação é intencional: o objetivo é chegar a um contrato claro para integração futura com `Tauri`, em vez de acoplar cedo demais um MVP experimental ao app principal.
+Essa separação mantém um contrato claro entre o viewer experimental e o app. O viewer já é acionado pelo backend Tauri e pode ser incluído como recurso empacotado; a integração permanece experimental e sujeita às limitações funcionais descritas acima.
 
 ## 13. Empacotamento Linux
 
@@ -1089,7 +1101,7 @@ Arquivos principais:
 
 Estado atual:
 
-- versão de referência atual do app: `0.5.2`
+- versão de referência atual do app: `0.5.3`
 - `package.json` é a fonte principal da versão do app
 - `tauri.conf.json` lê a versão a partir de `../package.json`
 - o frontend lê a versão a partir de `package.json` via `appInfo.ts`

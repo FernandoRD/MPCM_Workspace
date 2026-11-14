@@ -6,9 +6,9 @@ Stack principal: `Tauri 2` + `Rust` + `React 19` + `TypeScript` + `Zustand` + `T
 
 ## Versão atual
 
-`0.5.2`
+`0.5.3`
 
-## Novidades da 0.5.2
+## Novidades da 0.5.3
 
 - Sync e backup passaram a projetar credenciais por uma lista positiva de metadados permitidos antes da exportação
 - Campos legados como `privateKeyContent`, `passphrase` e `publicKeyContent` não vazam mais para a área em texto claro do payload portátil
@@ -281,6 +281,9 @@ src/
   types/
 src-tauri/
   src/
+    app_clipboard.rs
+    app_logging.rs
+    credentials.rs
     crypto.rs
     database.rs
     rdp.rs
@@ -289,8 +292,14 @@ src-tauri/
     ssh_config.rs
     storage.rs
     sync.rs
+    rate_limit.rs
+    session_bootstrap.rs
+    ssh_common.rs
+    system_terminal.rs
     telnet.rs
     totp.rs
+    updates.rs
+    vnc.rs
 scripts/
   sync-version.mjs
 clients/
@@ -311,7 +320,7 @@ clients/
 
 ### Requisitos
 
-- `Node.js 18+`
+- `Node.js ^20.19.0 || >=22.12.0` (faixa exigida pelo Vite 7; o CI usa Node.js 20)
 - `Rust stable`
 - Dependências nativas exigidas pelo Tauri para a sua plataforma
 
@@ -411,7 +420,7 @@ O workflow [.github/workflows/build.yml](.github/workflows/build.yml) compila o 
 
 Gatilhos:
 
-- **push de tag `v*`** (ex: `v0.5.2`): compila todas as plataformas e publica uma GitHub Release com os artefatos.
+- **push de tag `v*`** (ex: `v0.5.3`): compila todas as plataformas e publica uma GitHub Release com os artefatos.
 - **execução manual** (`workflow_dispatch`, na aba *Actions*): compila e disponibiliza os artefatos, sem criar Release.
 
 A cada release publicada, o workflow mantém apenas as **2 releases mais recentes** no GitHub — as anteriores são apagadas junto com suas tags.

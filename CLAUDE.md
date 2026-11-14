@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Versão: `0.5.2`
+- Versão: `0.5.3`
 - Aplicação desktop local-first para conexões `SSH`, `Telnet`, `RDP` e `VNC`
 - Frontend: React 19, TypeScript, Zustand, Tailwind CSS e Vite
 - Backend: Tauri 2 e Rust

@@ -1,6 +1,6 @@
 # Internal RDP Client Prototype
 
-Protótipo isolado para iniciar o desenvolvimento do cliente RDP interno sem tocar no código da aplicação principal.
+Cliente RDP experimental em Rust, integrado ao aplicativo principal por meio do backend Tauri e empacotável como recurso do app.
 
 ## Objetivo
 
@@ -139,10 +139,9 @@ Espelhamento automático do app:
 
 Sem essas flags, o protótipo usa um perfil mais agressivo de responsividade, desabilitando os efeitos visuais para reduzir custo de render no host remoto.
 
-## O que este protótipo ainda não faz
+## Limitações atuais do viewer experimental
 
-- UI interativa embutida
-- integração com `src-tauri`, `React` ou a UI atual
+- UI interativa embutida na janela React
 - gerenciamento de reconexão e lifecycle de janela
 - canais virtuais como clipboard, áudio e redirecionamentos
 - controle fino de render incremental fora do pipeline do `IronRDP`
@@ -161,7 +160,7 @@ O laboratório já está dividido em quatro blocos mais claros:
 - `bin/*.rs`
   composição final dos fluxos `viewer` e `screenshot`
 
-Essa separação é a base planejada para uma integração futura com `Tauri`, sem obrigar o app principal a depender do binário MVP como está hoje.
+Essa separação mantém um contrato interno claro. O app principal já localiza, inicia e empacota o viewer por meio do Tauri, mas a integração continua experimental e o viewer ainda tem as limitações listadas acima.
 
 ## Input suportado no viewer MVP
 
@@ -193,9 +192,12 @@ clients/internal-rdp-client/
     framebuffer.rs
     lib.rs
     mvp_runtime.rs
+    rdp_worker.rs
     session.rs
+    settings_bridge.rs
     transport.rs
     viewer_gpu.rs
+    viewer_metrics.rs
     viewer_winit.rs
     viewer_winit_input.rs
     viewer_winit_multimon.rs
@@ -253,4 +255,4 @@ cargo run --manifest-path clients/internal-rdp-client/Cargo.toml --bin viewer_mv
 2. Ampliar o mapeamento de teclas especiais e atalhos do viewer.
 3. Refinar lifecycle de janela, shutdown e reconexão.
 4. Consolidar uma API interna estável para sessão, input e render.
-5. Definir o contrato de integração futura com `src-tauri`.
+5. Refinar o contrato de integração com `src-tauri` e o lifecycle da janela.
